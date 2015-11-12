@@ -372,6 +372,8 @@ else()
     set(DOXYGEN_EXECUTABLE )
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
 # Warn about missing dependencies that will cause parts of OpenSubdiv to be
 # disabled.  Also, add preprocessor defines that can be used in the source
 # code to determine if a specific dependency is present or not.

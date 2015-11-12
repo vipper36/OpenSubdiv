@@ -49,24 +49,24 @@ struct PointDerivWeight {
     float du;
     float dv;
 
-    PointDerivWeight() 
+    __attribute__((always_inline)) PointDerivWeight() 
         : p(0.0f), du(0.0f), dv(0.0f)
     { }
-    PointDerivWeight(float w) 
+    __attribute__((always_inline)) PointDerivWeight(float w) 
         : p(w), du(w), dv(w)
     { }
-    PointDerivWeight(float w, float wDu, float wDv) 
+    __attribute__((always_inline)) PointDerivWeight(float w, float wDu, float wDv) 
         : p(w), du(wDu), dv(wDv)
     { }
 
-    friend PointDerivWeight operator*(PointDerivWeight lhs,
+    __attribute__((always_inline)) friend PointDerivWeight operator*(PointDerivWeight lhs,
                                       PointDerivWeight const& rhs) {
         lhs.p *= rhs.p;
         lhs.du *= rhs.du;
         lhs.dv *= rhs.dv;
         return lhs;
     }
-    PointDerivWeight& operator+=(PointDerivWeight const& rhs) {
+    __attribute__((always_inline)) PointDerivWeight& operator+=(PointDerivWeight const& rhs) {
         p += rhs.p;
         du += rhs.du;
         dv += rhs.dv;
@@ -156,19 +156,19 @@ public:
     class PointDerivAccumulator {
         WeightTable* _tbl;
     public:
-        PointDerivAccumulator(WeightTable* tbl) : _tbl(tbl)
+        __attribute__((always_inline)) PointDerivAccumulator(WeightTable* tbl) : _tbl(tbl)
         { }
-        void PushBack(PointDerivWeight weight) {
+        __attribute__((always_inline)) void PushBack(PointDerivWeight weight) {
             _tbl->_weights.push_back(weight.p);
             _tbl->_duWeights.push_back(weight.du);
             _tbl->_dvWeights.push_back(weight.dv);
         }
-        void Add(size_t i, PointDerivWeight weight) {
+        __attribute__((always_inline)) void Add(size_t i, PointDerivWeight weight) {
             _tbl->_weights[i] += weight.p;
             _tbl->_duWeights[i] += weight.du;
             _tbl->_dvWeights[i] += weight.dv;
         }
-        PointDerivWeight Get(size_t index) {
+        __attribute__((always_inline)) PointDerivWeight Get(size_t index) {
             return PointDerivWeight(_tbl->_weights[index], 
                                     _tbl->_duWeights[index],
                                     _tbl->_dvWeights[index]);
@@ -181,15 +181,15 @@ public:
     class ScalarAccumulator {
         WeightTable* _tbl;
     public:
-        ScalarAccumulator(WeightTable* tbl) : _tbl(tbl)
+        __attribute__((always_inline)) ScalarAccumulator(WeightTable* tbl) : _tbl(tbl)
         { }
-        void PushBack(PointDerivWeight weight) {
+        __attribute__((always_inline)) void PushBack(PointDerivWeight weight) {
             _tbl->_weights.push_back(weight.p);
         }
-        void Add(size_t i, float w) {
+        __attribute__((always_inline)) void Add(size_t i, float w) {
             _tbl->_weights[i] += w;
         }
-        float Get(size_t index) {
+        __attribute__((always_inline)) float Get(size_t index) {
             return _tbl->_weights[index];
         }
     };
@@ -226,7 +226,7 @@ private:
     //
     // PERFORMANCE: caution, this function is super hot.
     template <class W, class WACCUM>
-    void merge(int src, int dst, W weight, 
+    __attribute__((always_inline)) void merge(int src, int dst, W weight, 
                // Delaying weight*factor multiplication hides memory latency of
                // accessing weight[i], yielding more stable performance.
                W weightFactor, 
@@ -260,7 +260,7 @@ private:
 
     // Add a new vertex weight to the stencil table.
     template <class W, class WACCUM>
-    void add(int src, int dst, W weight, WACCUM weights)
+    __attribute__((always_inline)) void add(int src, int dst, W weight, WACCUM weights)
     {
         // The _dests array has num(weights) elements mapping each individual
         // element back to a specific stencil. The array is constructed in such

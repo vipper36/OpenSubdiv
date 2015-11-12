@@ -25,7 +25,33 @@
 #ifndef OPENSUBDIV3_FAR_STENCILBUILDER_H
 #define OPENSUBDIV3_FAR_STENCILBUILDER_H
 
-#include <vector>
+//from gcc-4.8 vector
+#define static __attribute__((always_inline)) static
+#include <bits/stl_algobase.h>
+#include <bits/allocator.h>
+#include <bits/stl_construct.h>
+#include <bits/stl_uninitialized.h>
+#include <bits/stl_vector.h>
+#include <bits/stl_bvector.h> 
+#include <bits/range_access.h>
+#undef static
+
+#define void __attribute__((always_inline)) void
+#ifndef _GLIBCXX_EXPORT_TEMPLATE
+# include <bits/vector.tcc>
+#endif
+#undef void
+
+#ifdef _GLIBCXX_DEBUG
+# include <debug/vector>
+#endif
+
+#ifdef _GLIBCXX_PROFILE
+# include <profile/vector>
+#endif
+//
+
+//#include <vector>
 
 #include "../version.h"
 #include "../far/stencilTable.h"
