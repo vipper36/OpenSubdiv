@@ -88,7 +88,14 @@ CpuEvalStencils(float const * src, BufferDescriptor const &srcDesc,
     src += srcDesc.offset;
     dst += dstDesc.offset;
 
-    if (srcDesc.length == 4 and dstDesc.length == 4 and
+    if (srcDesc.length == 3 and dstDesc.length == 3 and
+        srcDesc.stride == 3 and dstDesc.stride == 3) {
+
+        // SIMD fast path for aligned primvar data (3 floats)
+        ComputeStencilKernel<3>(src, dst,
+            sizes, indices, weights, start,  end);
+
+    } else if (srcDesc.length == 4 and dstDesc.length == 4 and
         srcDesc.stride == 4 and dstDesc.stride == 4) {
 
         // SIMD fast path for aligned primvar data (4 floats)
